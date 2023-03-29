@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SignInButton from "./SignInButton";
 
 export default function Header() {
   return (
@@ -15,9 +16,7 @@ export default function Header() {
                       <p>Minhas tasks</p>
                   </Link>
               </nav>
-              <button className="ml-auto">
-                  Entrar com github
-              </button>
+              <SignInButton />
           </div>
       </header>
   )
