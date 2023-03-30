@@ -1,3 +1,5 @@
+import { GetStaticProps } from "next"
+
 import Head from "next/head"
 
 export default function Home() {
@@ -21,4 +23,13 @@ export default function Home() {
      </main>
     </>
   )
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  return {
+    props: {
+
+    },
+    revalidate: 60 * 60
+  }
 }
