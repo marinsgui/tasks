@@ -1,3 +1,4 @@
+import SupportButton from "@/components/SupportButton"
 import Head from "next/head"
 
 import { FiPlus, FiCalendar, FiEdit2, FiTrash, FiClock } from 'react-icons/fi'
@@ -11,7 +12,10 @@ export default function tasks() {
 
       <main className="max-w-6xl my-8 mx-auto p-8 rounded-md bg-slate-800">
         <form className="flex justify-center gap-3">
-          <input type="text" placeholder="Insira sua tarefa" className="w-11/12 h-12 bg-slate-700 border-2 border-slate-600 rounded-md py-1 px-2 text-white" />
+          <input 
+            type="text" 
+            placeholder="Insira sua tarefa" 
+            className="w-11/12 h-12 bg-slate-700 border-2 border-slate-600 rounded-md py-1 px-2 text-white" />
           <button type="submit" className="bg-orange-500 px-5 rounded-md">
             <FiPlus size={25} />
           </button>
@@ -51,6 +55,8 @@ export default function tasks() {
           </time>
         </div>
       </div>
+
+      <SupportButton />
     </>
   )
 }
