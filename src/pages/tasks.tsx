@@ -8,6 +8,8 @@ import { FormEvent, useState } from "react"
 
 import Head from "next/head"
 
+import Link from "next/link"
+
 import { FiPlus, FiCalendar, FiEdit2, FiTrash, FiClock } from 'react-icons/fi'
 
 import { projectFirestore } from "@/services/firebaseConnection"
@@ -21,6 +23,7 @@ interface TasksProps {
 
 export default function tasks({ user }: TasksProps) {
   const [input, setInput] = useState('')
+  const [tasklist, setTasklist] = useState([])
 
   async function handleAddTask(e: FormEvent) {
     e.preventDefault()
@@ -35,7 +38,16 @@ export default function tasks({ user }: TasksProps) {
       userId: user.id,
       nome: user.nome
     }).then((doc) => {
-      console.log('CADASTRADO COM SUCESSO')
+      let data = {
+        id: doc.id,
+        created: new Date(),
+        createdFormatted: new Intl.DateTimeFormat('pt-br', {dateStyle: 'long'}).format(new Date()),
+        tarefa: input,
+        userId: user.id,
+        nome: user.nome
+      }
+      setTasklist([...tasklist, data])
+      setInput('')
     }).catch(err => {
       console.log('ERRO AO CADASTRAR: ', err)
     })
@@ -60,28 +72,34 @@ export default function tasks({ user }: TasksProps) {
           </button>
         </form>
 
-        <h1 className="text-white text-2xl mt-6">Você tem 2 tarefas!</h1>
+        <h1 className="text-white text-2xl mt-6">{`Você tem ${tasklist.length} tarefas!`}</h1>
 
-        <section className="bg-slate-700 my-4 p-3 rounded-md">
-          <article>
-            <p className="cursor-pointer text-slate-200 text-base">bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla bla</p>
-            <div className="flex justify-between mt-4">
-              <div className="flex justify-center items-center">
+        <section>
+          {tasklist && tasklist.map(task => (
+            <article className="bg-slate-700 my-4 p-3 rounded-md" key={task.id}>
+              <Link href={`/tasks/${task.id}`}>
+                <p className="cursor-pointer text-slate-200 text-base">{task.tarefa}</p>
+              </Link>
+              <div className="flex justify-between mt-4">
                 <div className="flex justify-center items-center">
-                  <FiCalendar size={20} color="rgb(249 115 22)" />
-                  <time className="text-orange-500 ml-1 mr-4">30 de março de 2023</time>
+                  <div className="flex justify-center items-center">
+                    <FiCalendar size={20} color="rgb(249 115 22)" />
+                    <time className="text-orange-500 ml-1 mr-4">
+                      {task.createdFormatted}
+                    </time>
+                  </div>
+                  <button className="flex justify-center items-center">
+                    <FiEdit2 size={20} color="#fff" />
+                    <span className="ml-1 text-white cursor-pointer hover:brightness-90">Editar</span>
+                  </button>
                 </div>
                 <button className="flex justify-center items-center">
-                  <FiEdit2 size={20} color="#fff" />
-                  <span className="ml-1 text-white cursor-pointer hover:brightness-90">Editar</span>
+                  <FiTrash size={20} color="red" />
+                  <span className="ml-1 text-white cursor-pointer hover:brightness-90">Excluir</span>
                 </button>
               </div>
-              <button className="flex justify-center items-center">
-                <FiTrash size={20} color="red" />
-                <span className="ml-1 text-white cursor-pointer hover:brightness-90">Excluir</span>
-              </button>
-            </div>
-          </article>
+            </article>
+          ))}
         </section>
       </main>
 
