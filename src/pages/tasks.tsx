@@ -14,16 +14,26 @@ import { FiPlus, FiCalendar, FiEdit2, FiTrash, FiClock } from 'react-icons/fi'
 
 import { projectFirestore } from "@/services/firebaseConnection"
 
+type TaskList = {
+  id: string,
+  created: string | Date,
+  createdFormatted?: string,
+  tarefa: string,
+  userId: string,
+  nome: string
+}
+
 interface TasksProps {
   user: {
     nome: string,
     id: string
   }
+  data: string
 }
 
-export default function tasks({ user }: TasksProps) {
+export default function tasks({ user, data }: TasksProps) {
   const [input, setInput] = useState('')
-  const [tasklist, setTasklist] = useState([])
+  const [tasklist, setTasklist] = useState<TaskList[]>(JSON.parse(data))
 
   async function handleAddTask(e: FormEvent) {
     e.preventDefault()
@@ -72,7 +82,9 @@ export default function tasks({ user }: TasksProps) {
           </button>
         </form>
 
-        <h1 className="text-white text-2xl mt-6">{`Você tem ${tasklist.length} tarefas!`}</h1>
+        <h1 className="text-white text-2xl mt-6">
+          {tasklist.length > 0 ? `Você tem ${tasklist.length} tarefas!` : 'Você não possui tarefas.'}
+        </h1>
 
         <section>
           {tasklist && tasklist.map(task => (
@@ -130,6 +142,16 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     }
   }
 
+  const currentTasks = await projectFirestore.collection('tasks').where('userId', '==', session?.id).orderBy('created', 'asc').get()
+
+  const data = JSON.stringify(currentTasks.docs.map(item => {
+    return {
+      id: item.id,
+      createdFormatted: new Intl.DateTimeFormat('pt-br', {dateStyle: 'long'}).format(item.data().created.toDate()),
+      ...item.data() 
+    }
+  }))
+
   const user = {
     nome: session?.user?.name,
     id: session?.id
@@ -137,7 +159,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   return {
     props: {
-      user
+      user,
+      data
     }
   }
 }
