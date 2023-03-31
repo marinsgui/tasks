@@ -4,11 +4,43 @@ import { GetServerSideProps } from "next"
 
 import { getSession } from "next-auth/react"
 
+import { FormEvent, useState } from "react"
+
 import Head from "next/head"
 
 import { FiPlus, FiCalendar, FiEdit2, FiTrash, FiClock } from 'react-icons/fi'
 
-export default function tasks() {
+import { projectFirestore } from "@/services/firebaseConnection"
+
+interface TasksProps {
+  user: {
+    nome: string,
+    id: string
+  }
+}
+
+export default function tasks({ user }: TasksProps) {
+  const [input, setInput] = useState('')
+
+  async function handleAddTask(e: FormEvent) {
+    e.preventDefault()
+    if(input === '') {
+      alert('Insira alguma tarefa no campo')
+      return
+    }
+
+    await projectFirestore.collection('tasks').add({
+      created: new Date(),
+      tarefa: input,
+      userId: user.id,
+      nome: user.nome
+    }).then((doc) => {
+      console.log('CADASTRADO COM SUCESSO')
+    }).catch(err => {
+      console.log('ERRO AO CADASTRAR: ', err)
+    })
+  }
+  
   return (
     <>
       <Head>
@@ -16,9 +48,11 @@ export default function tasks() {
       </Head>
 
       <main className="max-w-6xl my-8 mx-auto p-8 rounded-md bg-slate-800">
-        <form className="flex justify-center gap-3">
+        <form className="flex justify-center gap-3" onSubmit={handleAddTask}>
           <input 
-            type="text" 
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)} 
             placeholder="Insira sua tarefa" 
             className="w-11/12 h-12 bg-slate-700 border-2 border-slate-600 rounded-md py-1 px-2 text-white" />
           <button type="submit" className="bg-orange-500 px-5 rounded-md">
@@ -78,9 +112,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     }
   }
 
+  const user = {
+    nome: session?.user?.name,
+    id: session?.id
+  }
+
   return {
     props: {
-
+      user
     }
   }
 }
