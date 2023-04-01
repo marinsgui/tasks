@@ -36,5 +36,6 @@ export default NextAuth({
         return false
       }
     }
-  }
+  },
+  secret: process.env.GITHUB_CLIENT_SECRET
 })
