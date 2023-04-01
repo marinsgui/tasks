@@ -18,7 +18,7 @@
 <p>O propósito desse projeto foi me familiarizar com NextJS, TailwindCSS e Firebase.</p>
 
 <h2>Tecnologias utilizadas</h2>
-<p><a href='https://nextjs.org/'>NextJS</p>
+<p>- <a href='https://nextjs.org/'>NextJS</p>
 <p>- <a href='https://pt-br.reactjs.org/'>ReactJS</p>
 <p>- React Hooks</p>
 <p>- <a href='https://tailwindcss.com/'>TailwindCSS</p>
