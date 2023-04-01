@@ -8,6 +8,7 @@ export default NextAuth({
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      scope: 'read:user'
     }),
     // ...add more providers here
   ],
@@ -26,7 +27,7 @@ export default NextAuth({
           }
       }
     },
-    async signIn(user, account, profile) {
+    async signIn(user) {
       const { email } = user
 
       try {
@@ -37,5 +38,4 @@ export default NextAuth({
       }
     }
   },
-  secret: process.env.GITHUB_CLIENT_SECRET
 })
