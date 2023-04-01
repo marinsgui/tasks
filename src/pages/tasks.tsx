@@ -6,7 +6,7 @@ import { FormEvent, useState } from "react"
 
 import Head from "next/head"
 
-import { FiPlus, FiCalendar, FiEdit2, FiTrash, FiClock, FiX } from 'react-icons/fi'
+import { FiPlus, FiCalendar, FiEdit2, FiTrash, FiX } from 'react-icons/fi'
 
 import { projectFirestore } from "@/services/firebaseConnection"
 
@@ -27,7 +27,7 @@ interface TasksProps {
   data: string
 }
 
-export default function tasks({ user, data }: TasksProps) {
+export default function Tasks({ user, data }: TasksProps) {
   const [input, setInput] = useState('')
   const [tasklist, setTasklist] = useState<TaskList[]>(JSON.parse(data))
   const [taskEdit, setTaskEdit] = useState<TaskList | null>(null)
