@@ -1,5 +1,3 @@
-import SupportButton from "@/components/SupportButton"
-
 import { GetServerSideProps } from "next"
 
 import { getSession } from "next-auth/react"
@@ -7,8 +5,6 @@ import { getSession } from "next-auth/react"
 import { FormEvent, useState } from "react"
 
 import Head from "next/head"
-
-import Link from "next/link"
 
 import { FiPlus, FiCalendar, FiEdit2, FiTrash, FiClock, FiX } from 'react-icons/fi'
 
@@ -55,7 +51,7 @@ export default function tasks({ user, data }: TasksProps) {
         setInput('')
         })
         return
-      }
+    }
 
     await projectFirestore.collection('tasks').add({
       created: new Date(),
@@ -133,9 +129,7 @@ export default function tasks({ user, data }: TasksProps) {
         <section>
           {tasklist && tasklist.map(task => (
             <article className="bg-slate-700 my-4 p-3 rounded-md" key={task.id}>
-              <Link href={`/tasks/${task.id}`}>
-                <p className="cursor-pointer text-slate-200 text-base">{task.tarefa}</p>
-              </Link>
+              <p className="cursor-pointer text-slate-200 text-base">{task.tarefa}</p>
               <div className="flex justify-between mt-4">
                 <div className="flex justify-center items-center">
                   <div className="flex justify-center items-center">
@@ -158,18 +152,6 @@ export default function tasks({ user, data }: TasksProps) {
           ))}
         </section>
       </main>
-
-      <div className="max-w-6xl my-4 mx-auto p-4 bg-slate-800 rounded-md">
-        <h3 className="text-orange-500 text-3xl">Obrigado por apoiar esse projeto!</h3>
-        <div className="mt-4 flex items-center">
-          <FiClock size={28} color="#fff" />
-          <time className="text-white text-xl p-3">
-            Última doação foi há 3 dias.
-          </time>
-        </div>
-      </div>
-
-      <SupportButton />
     </>
   )
 }
