@@ -1,8 +1,6 @@
-import { GetServerSideProps } from "next"
-
 import { getSession } from "next-auth/react"
 
-import { FormEvent, useState } from "react"
+import { useState } from "react"
 
 import Head from "next/head"
 
@@ -10,29 +8,12 @@ import { FiPlus, FiCalendar, FiEdit2, FiTrash, FiX } from 'react-icons/fi'
 
 import { projectFirestore } from "@/services/firebaseConnection"
 
-type TaskList = {
-  id: string,
-  created: string | Date,
-  createdFormatted?: string,
-  tarefa: string,
-  userId: string,
-  nome: string
-}
-
-interface TasksProps {
-  user: {
-    nome: string,
-    id: string
-  }
-  data: string
-}
-
-export default function Tasks({ user, data }: TasksProps) {
+export default function Tasks({ user, data }) {
   const [input, setInput] = useState('')
-  const [tasklist, setTasklist] = useState<TaskList[]>(JSON.parse(data))
-  const [taskEdit, setTaskEdit] = useState<TaskList | null>(null)
+  const [tasklist, setTasklist] = useState(JSON.parse(data))
+  const [taskEdit, setTaskEdit] = useState(null)
 
-  async function handleAddTask(e: FormEvent) {
+  async function handleAddTask(e) {
     e.preventDefault()
     if(input === '') {
       alert('Insira alguma tarefa no campo')
@@ -74,7 +55,7 @@ export default function Tasks({ user, data }: TasksProps) {
     })
   }
 
-  async function handleDelete(id: string) {
+  async function handleDelete(id) {
     await projectFirestore.collection('tasks').doc(id).delete().then(() => {
       console.log('DELETADO COM SUCESSO')
       let taskDeleted = tasklist.filter(item => {
@@ -84,7 +65,7 @@ export default function Tasks({ user, data }: TasksProps) {
     }).catch(err => console.log(err))
   }
 
-  function handleEditTask(task: TaskList) {
+  function handleEditTask(task) {
     setTaskEdit(task)
     setInput(task.tarefa)
   }
@@ -156,7 +137,7 @@ export default function Tasks({ user, data }: TasksProps) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps = async ({ req }) => {
   const session = await getSession({ req })
   
   if(!session?.id) {
