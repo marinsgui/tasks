@@ -6,7 +6,7 @@ import Head from "next/head"
 
 import { FiPlus, FiCalendar, FiEdit2, FiTrash, FiX } from 'react-icons/fi'
 
-import { projectFirestore } from "@/services/firebaseConnection"
+import { projectFirestore } from "../services/firebaseConnection"
 
 export default function Tasks({ user, data }) {
   const [input, setInput] = useState('')
