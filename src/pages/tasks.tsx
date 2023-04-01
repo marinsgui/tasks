@@ -10,7 +10,7 @@ import Head from "next/head"
 
 import Link from "next/link"
 
-import { FiPlus, FiCalendar, FiEdit2, FiTrash, FiClock } from 'react-icons/fi'
+import { FiPlus, FiCalendar, FiEdit2, FiTrash, FiClock, FiX } from 'react-icons/fi'
 
 import { projectFirestore } from "@/services/firebaseConnection"
 
@@ -34,6 +34,7 @@ interface TasksProps {
 export default function tasks({ user, data }: TasksProps) {
   const [input, setInput] = useState('')
   const [tasklist, setTasklist] = useState<TaskList[]>(JSON.parse(data))
+  const [taskEdit, setTaskEdit] = useState<TaskList | null>(null)
 
   async function handleAddTask(e: FormEvent) {
     e.preventDefault()
@@ -41,6 +42,20 @@ export default function tasks({ user, data }: TasksProps) {
       alert('Insira alguma tarefa no campo')
       return
     }
+
+    if(taskEdit) {
+      await projectFirestore.collection('tasks').doc(taskEdit.id).update({
+        tarefa: input
+      }).then(() => {
+        let data = tasklist
+        let taskIndex = tasklist.findIndex(item => item.id === taskEdit.id)
+        data[taskIndex].tarefa = input
+        setTasklist(data)
+        setTaskEdit(null)
+        setInput('')
+        })
+        return
+      }
 
     await projectFirestore.collection('tasks').add({
       created: new Date(),
@@ -72,6 +87,16 @@ export default function tasks({ user, data }: TasksProps) {
       setTasklist(taskDeleted)
     }).catch(err => console.log(err))
   }
+
+  function handleEditTask(task: TaskList) {
+    setTaskEdit(task)
+    setInput(task.tarefa)
+  }
+
+  function handleCancelEdit() {
+    setInput('')
+    setTaskEdit(null)
+  }
   
   return (
     <>
@@ -80,6 +105,15 @@ export default function tasks({ user, data }: TasksProps) {
       </Head>
 
       <main className="max-w-6xl my-8 mx-auto p-8 rounded-md bg-slate-800">
+        {taskEdit && (
+          <span className="text-white text-lg flex items-center">
+            <button onClick={handleCancelEdit}>
+              <FiX size={30} color="red" />
+            </button>
+            Você está editando uma tarefa!
+          </span>
+        )}
+
         <form className="flex justify-center gap-3" onSubmit={handleAddTask}>
           <input 
             type="text"
@@ -110,7 +144,7 @@ export default function tasks({ user, data }: TasksProps) {
                       {task.createdFormatted}
                     </time>
                   </div>
-                  <button className="flex justify-center items-center">
+                  <button className="flex justify-center items-center" onClick={() => handleEditTask(task)}>
                     <FiEdit2 size={20} color="#fff" />
                     <span className="ml-1 text-white cursor-pointer hover:brightness-90">Editar</span>
                   </button>
