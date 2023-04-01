@@ -100,7 +100,7 @@ export default function tasks({ user, data }: TasksProps) {
         <title>Minhas tarefas - Tasks</title>
       </Head>
 
-      <main className="max-w-6xl my-8 mx-auto p-8 rounded-md bg-slate-800">
+      <main className="max-w-xs md:max-w-6xl my-8 mx-auto p-8 rounded-md bg-slate-800">
         {taskEdit && (
           <span className="text-white text-lg flex items-center">
             <button onClick={handleCancelEdit}>
@@ -110,15 +110,15 @@ export default function tasks({ user, data }: TasksProps) {
           </span>
         )}
 
-        <form className="flex justify-center gap-3" onSubmit={handleAddTask}>
+        <form className="flex flex-col md:flex-row justify-center gap-3" onSubmit={handleAddTask}>
           <input 
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)} 
             placeholder="Insira sua tarefa" 
-            className="w-11/12 h-12 bg-slate-700 border-2 border-slate-600 rounded-md py-1 px-2 text-white" />
-          <button type="submit" className="bg-orange-500 px-5 rounded-md">
-            <FiPlus size={25} />
+            className="md:w-11/12 h-12 bg-slate-700 border-2 border-slate-600 rounded-md py-1 px-2 text-white" />
+          <button type="submit" className="bg-orange-500 px-5 rounded-md h-12">
+            <FiPlus size={25} className="m-auto" />
           </button>
         </form>
 
@@ -130,20 +130,20 @@ export default function tasks({ user, data }: TasksProps) {
           {tasklist && tasklist.map(task => (
             <article className="bg-slate-700 my-4 p-3 rounded-md" key={task.id}>
               <p className="cursor-pointer text-slate-200 text-base">{task.tarefa}</p>
-              <div className="flex justify-between mt-4">
+              <div className="flex flex-col md:flex-row justify-between mt-6">
                 <div className="flex justify-center items-center">
-                  <div className="flex justify-center items-center">
+                  <div className="flex flex-col md:flex-row justify-center items-center">
                     <FiCalendar size={20} color="rgb(249 115 22)" />
                     <time className="text-orange-500 ml-1 mr-4">
                       {task.createdFormatted}
                     </time>
                   </div>
-                  <button className="flex justify-center items-center" onClick={() => handleEditTask(task)}>
+                  <button className="flex flex-col md:flex-row justify-center items-center" onClick={() => handleEditTask(task)}>
                     <FiEdit2 size={20} color="#fff" />
                     <span className="ml-1 text-white cursor-pointer hover:brightness-90">Editar</span>
                   </button>
                 </div>
-                <button className="flex justify-center items-center" onClick={() => handleDelete(task.id)}>
+                <button className="flex flex-col md:flex-row justify-center items-center mt-2" onClick={() => handleDelete(task.id)}>
                   <FiTrash size={20} color="red" />
                   <span className="ml-1 text-white cursor-pointer hover:brightness-90">Excluir</span>
                 </button>
