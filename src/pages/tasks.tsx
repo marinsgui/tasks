@@ -62,6 +62,16 @@ export default function tasks({ user, data }: TasksProps) {
       console.log('ERRO AO CADASTRAR: ', err)
     })
   }
+
+  async function handleDelete(id: string) {
+    await projectFirestore.collection('tasks').doc(id).delete().then(() => {
+      console.log('DELETADO COM SUCESSO')
+      let taskDeleted = tasklist.filter(item => {
+        return (item.id !== id)
+      })
+      setTasklist(taskDeleted)
+    }).catch(err => console.log(err))
+  }
   
   return (
     <>
@@ -105,7 +115,7 @@ export default function tasks({ user, data }: TasksProps) {
                     <span className="ml-1 text-white cursor-pointer hover:brightness-90">Editar</span>
                   </button>
                 </div>
-                <button className="flex justify-center items-center">
+                <button className="flex justify-center items-center" onClick={() => handleDelete(task.id)}>
                   <FiTrash size={20} color="red" />
                   <span className="ml-1 text-white cursor-pointer hover:brightness-90">Excluir</span>
                 </button>
